@@ -150,6 +150,12 @@ activemq-data/
 # Environments
 .env
 .envrc
+
+# Upstox access token
+token.json
+
+# Upstox instrument master cache
+instruments_nse.json
 .venv
 env/
 venv/
