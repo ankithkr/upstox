@@ -2,3 +2,5 @@ flask
 requests
 python-dotenv
 openpyxl
+gspread
+google-auth-oauthlib

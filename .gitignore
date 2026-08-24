@@ -156,6 +156,13 @@ token.json
 
 # Upstox instrument master cache
 instruments_nse.json
+
+# Cached historical candle data
+data_cache/
+
+# Google OAuth client secret & cached token
+creds.json
+token_google.json
 .venv
 env/
 venv/
