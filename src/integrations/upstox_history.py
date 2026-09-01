@@ -1,4 +1,5 @@
 import csv
+import os
 import time
 from datetime import date, timedelta
 from pathlib import Path
@@ -10,6 +11,15 @@ from src.integrations.upstox_auth import load_access_token
 
 HISTORY_URL = "https://api.upstox.com/v3/historical-candle"
 CACHE_DIR = Path("data_cache/candles")
+
+# When set (the local UI's precompute does), never hit the network -
+# serve only what's already cached on disk and skip missing chunks.
+OFFLINE = os.getenv("UPSTOX_OFFLINE") == "1"
+
+# Process-lifetime memo: the same (instrument, unit, interval, range) is
+# requested repeatedly across a backtest + the per-day matrix build, and
+# reparsing thousands of CSVs each time dominates the runtime.
+_MEMO: dict[tuple, list[tuple]] = {}
 
 # Upstox caps 1-15 minute (and hourly) candle requests to ~1 calendar
 # month of range per call; 28 days stays safely under that regardless
@@ -74,7 +84,11 @@ def get_candles(
     don't refetch. Returns (timestamp, open, high, low, close, volume)
     tuples, oldest first.
     """
-    token = load_access_token()
+    memo_key = (instrument_key, unit, interval, start_date, end_date)
+    if memo_key in _MEMO:
+        return _MEMO[memo_key]
+
+    token = None if OFFLINE else load_access_token()
     chunk_days = CHUNK_DAYS if unit in CHUNKED_UNITS else None
 
     all_candles = []
@@ -89,6 +103,9 @@ def get_candles(
         path = _cache_path(instrument_key, unit, interval, current_start, chunk_end)
         cached = _read_cache(path)
         if cached is None:
+            if OFFLINE:
+                current_start = chunk_end + timedelta(days=1)
+                continue
             raw = _fetch_chunk(instrument_key, unit, interval, current_start, chunk_end, token)
             cached = [tuple(c[:6]) for c in reversed(raw)]
             _write_cache(path, cached)
@@ -97,4 +114,5 @@ def get_candles(
         current_start = chunk_end + timedelta(days=1)
 
     all_candles.sort(key=lambda c: c[0])
+    _MEMO[memo_key] = all_candles
     return all_candles

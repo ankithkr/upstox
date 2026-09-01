@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ORB Backtest Review</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1e222b; --line:#2b303b;
+    --text:#e6e8ec; --muted:#9aa3b2; --accent:#6ea8fe;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font:14px/1.45 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+  header{padding:14px 20px;border-bottom:1px solid var(--line);display:flex;
+    align-items:center;gap:16px;flex-wrap:wrap;background:var(--panel)}
+  h1{font-size:16px;margin:0;font-weight:600}
+  .tabs{display:flex;gap:4px}
+  .tabs button{background:transparent;border:1px solid var(--line);color:var(--muted);
+    padding:6px 14px;border-radius:6px;cursor:pointer;font-size:13px}
+  .tabs button.active{background:var(--panel2);color:var(--text);border-color:var(--accent)}
+  main{padding:20px;max-width:1400px;margin:0 auto}
+  .view{display:none}
+  .view.active{display:block}
+  h2{font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);
+    margin:24px 0 10px}
+  h2:first-child{margin-top:0}
+  table{border-collapse:collapse;width:100%;font-size:13px}
+  th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+  th{background:var(--panel2);position:sticky;top:0;cursor:default}
+  tbody tr:hover{background:#1b1f28}
+  .chips{display:flex;flex-wrap:wrap;gap:4px}
+  .chip{background:var(--panel2);border:1px solid var(--line);border-radius:4px;
+    padding:1px 6px;font-size:12px}
+  .cards{display:flex;flex-wrap:wrap;gap:12px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:8px;
+    padding:12px 16px;min-width:150px}
+  .card .k{font-size:12px;color:var(--muted)}
+  .card .v{font-size:20px;font-weight:600;margin-top:2px}
+  .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+  select,input[type=text]{background:var(--panel2);border:1px solid var(--line);
+    color:var(--text);padding:6px 9px;border-radius:6px;font-size:13px}
+  button.act{background:var(--accent);border:none;color:#08122a;padding:6px 14px;
+    border-radius:6px;cursor:pointer;font-weight:600}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+  .cell{border:1px solid var(--line);border-radius:6px;padding:8px 10px;cursor:pointer;
+    color:#0c0f14}
+  .cell .name{font-weight:600;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cell .val{font-size:16px;font-weight:700}
+  .cell .sub{font-size:11px;opacity:.8}
+  .cell.selected{outline:3px solid var(--accent);outline-offset:1px}
+  .cell.qual{box-shadow:0 0 0 2px #f5c542 inset}
+  .cell.picked{outline:3px solid #fff;outline-offset:1px}
+  .stockDetail{margin-top:12px;padding:10px 12px;background:var(--panel2);
+    border:1px solid var(--line);border-radius:6px;font-size:13px}
+  .stockDetail table td{border:none;padding:2px 10px 2px 0}
+  .muted{color:var(--muted)}
+  .tag{display:inline-block;padding:0 6px;border-radius:4px;font-size:11px;font-weight:700}
+  .tag.TARGET_HIT{background:#2e7d46;color:#fff}
+  .tag.STOPPED_LOSS{background:#b23b3b;color:#fff}
+  .tag.STOPPED_BREAKEVEN{background:#7a6f2e;color:#fff}
+  .tag.EOD_EXIT{background:#3d4350;color:#fff}
+  .tag.BULLISH,.tag.LONG{background:#2e7d46;color:#fff}
+  .tag.BEARISH,.tag.SHORT{background:#b23b3b;color:#fff}
+  .tag.NEUTRAL{background:#3d4350;color:#fff}
+  .drill{margin-top:14px;background:var(--panel);border:1px solid var(--line);
+    border-radius:8px;padding:14px}
+  .scroll{max-height:70vh;overflow:auto;border:1px solid var(--line);border-radius:8px}
+  .scroll table th{top:0}
+  .notice{background:#2a2410;border:1px solid #5c4a12;color:#e9d9a6;padding:10px 14px;
+    border-radius:8px;margin-bottom:14px}
+  .pill{font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:20px;
+    padding:2px 10px}
+  a.link{color:var(--accent);cursor:pointer;text-decoration:underline}
+</style>
+</head>
+<body>
+<header>
+  <h1>ORB Backtest Review</h1>
+  <div class="tabs">
+    <button data-tab="matrix" class="active">Matrix</button>
+    <button data-tab="backtest">Backtest data</button>
+    <button data-tab="heatmap">Date heatmap</button>
+  </div>
+  <span id="range" class="pill"></span>
+  <span style="flex:1"></span>
+  <button class="act" id="rebuild">Rebuild data</button>
+</header>
+<main>
+  <section id="view-matrix" class="view active">
+    <h2>Strategy universe &mdash; sector &rarr; constituent stocks</h2>
+    <div id="matrix"></div>
+  </section>
+
+  <section id="view-backtest" class="view">
+    <div id="bt-body"><p class="muted">Loading&hellip;</p></div>
+  </section>
+
+  <section id="view-heatmap" class="view">
+    <div class="controls">
+      <label>Date
+        <select id="dateSel"></select>
+      </label>
+      <span id="dayHead" class="muted"></span>
+    </div>
+    <div id="hmNotice"></div>
+    <h2>Sector 09:30 % change &mdash; click a sector to drill into its stocks</h2>
+    <div id="sectorGrid" class="grid"></div>
+    <div id="drill"></div>
+  </section>
+</main>
+
+<script>
+const RED=[245,125,125], MID=[245,245,245], GREEN=[107,186,122];
+function lerp(a,b,t){return a+(b-a)*t}
+function heat(pct){
+  if(pct===null||pct===undefined||isNaN(pct)) return "#2b303b";
+  let t=Math.max(-1,Math.min(1,pct/3)), from,to,k;
+  if(t<0){from=RED;to=MID;k=t+1;} else {from=MID;to=GREEN;k=t;}
+  const c=[0,1,2].map(i=>Math.round(lerp(from[i],to[i],k)));
+  return `rgb(${c[0]},${c[1]},${c[2]})`;
+}
+function fmt(x){return (x>0?"+":"")+x.toFixed(2)+"%"}
+const $=s=>document.querySelector(s);
+const el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!==undefined)e.innerHTML=h;return e};
+
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active"));
+  document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active");
+  $("#view-"+b.dataset.tab).classList.add("active");
+});
+
+// ---------- Matrix ----------
+fetch("/api/matrix").then(r=>r.json()).then(d=>{
+  const t=el("table");
+  t.innerHTML="<thead><tr><th>Sector</th><th>Instrument key</th><th># stocks</th><th>Constituents</th></tr></thead>";
+  const tb=el("tbody");
+  d.sectors.forEach(s=>{
+    const tr=el("tr");
+    const chips=s.stocks.map(x=>`<span class="chip">${x}</span>`).join("");
+    tr.innerHTML=`<td>${s.sector}</td><td class="muted">${s.instrument_key||""}</td>
+      <td>${s.stocks.length||'<span class="muted">&mdash;</span>'}</td>
+      <td><div class="chips">${chips||'<span class="muted">no stock list</span>'}</div></td>`;
+    tb.appendChild(tr);
+  });
+  t.appendChild(tb);
+  $("#matrix").appendChild(t);
+});
+
+// ---------- Backtest ----------
+function grpTable(title,rows,head){
+  const w=el("div");
+  w.appendChild(el("h2",null,title));
+  const t=el("table");
+  t.innerHTML="<thead><tr>"+head.map(h=>`<th>${h}</th>`).join("")+"</tr></thead>";
+  const tb=el("tbody");
+  rows.forEach(r=>{tb.appendChild(el("tr",null,r.map(c=>`<td>${c}</td>`).join("")))});
+  t.appendChild(tb); w.appendChild(t); return w;
+}
+let BT=null;
+fetch("/api/backtest").then(r=>r.ok?r.json():Promise.reject()).then(d=>{
+  BT=d;
+  const b=$("#bt-body"); b.innerHTML="";
+  const ov=d.overview, km=d.key_metrics;
+  b.appendChild(el("h2",null,"Overview"));
+  const cards=el("div","cards");
+  const add=(k,v)=>cards.appendChild(el("div","card",`<div class="k">${k}</div><div class="v">${v}</div>`));
+  add("Period",`${ov.start_date} &rarr; ${ov.end_date}`);
+  add("Trading days",ov.trading_days);
+  add("Total signals",ov.total_signals);
+  add("Unique signals",ov.unique_signals);
+  add("Win rate",km.win_rate_pct+"%");
+  add("Avg hold (min)",km.avg_hold_minutes);
+  add("Avg hold &mdash; win",km.avg_hold_minutes_target_hit);
+  add("Avg hold &mdash; loss",km.avg_hold_minutes_stopped_loss);
+  b.appendChild(cards);
+  b.appendChild(grpTable("Outcome breakdown",d.outcome_breakdown,["Outcome","Count","% of total"]));
+  b.appendChild(grpTable("By month",d.by_month,["Month","Trades","Target hit","Win rate %"]));
+  b.appendChild(grpTable("By sector",d.by_sector,["Sector","Trades","Target hit","Win rate %"]));
+  b.appendChild(grpTable("By direction",d.by_direction,["Direction","Trades","Target hit","Win rate %"]));
+
+  b.appendChild(el("h2",null,`All trades (${d.trades.length})`));
+  const ctl=el("div","controls");
+  ctl.innerHTML=`<input type="text" id="tf" placeholder="filter: symbol / sector / date">
+    <select id="of"><option value="">all outcomes</option>
+      <option>TARGET_HIT</option><option>STOPPED_LOSS</option>
+      <option>STOPPED_BREAKEVEN</option><option>EOD_EXIT</option></select>`;
+  b.appendChild(ctl);
+  const cols=["date","sector","symbol","direction","market_bias","sector_change","stock_change",
+    "breakout_time","entry_time","entry_price","stop_loss","target","outcome","exit_time","exit_price","hold_minutes"];
+  const CAP=400;
+  const count=el("div","muted");count.style.margin="6px 0";
+  b.appendChild(count);
+  const wrap=el("div","scroll");
+  const t=el("table");
+  t.innerHTML="<thead><tr>"+cols.map(c=>`<th>${c}</th>`).join("")+"</tr></thead>";
+  const tb=el("tbody"); t.appendChild(tb); wrap.appendChild(t); b.appendChild(wrap);
+  function render(){
+    const q=$("#tf").value.toLowerCase(), o=$("#of").value;
+    const rows=d.trades.filter(tr=>{
+      if(o&&tr.outcome!==o)return false;
+      if(!q)return true;
+      return (tr.symbol+tr.sector+tr.date).toLowerCase().includes(q);
+    });
+    count.textContent = rows.length>CAP
+      ? `showing first ${CAP} of ${rows.length} — narrow the filter to see the rest`
+      : `${rows.length} trade${rows.length===1?"":"s"}`;
+    tb.innerHTML = rows.slice(0,CAP).map(tr=>"<tr>"+cols.map(c=>{
+      let v=tr[c]; if(v===null||v===undefined)v="";
+      if(c==="outcome")return `<td><span class="tag ${v}">${v}</span></td>`;
+      if(c==="breakout_time"||c==="entry_time"||c==="exit_time")v=String(v).slice(11,16);
+      return `<td>${v}</td>`;
+    }).join("")+"</tr>").join("");
+  }
+  $("#tf").oninput=render; $("#of").onchange=render; render();
+}).catch(()=>{ $("#bt-body").innerHTML='<div class="notice">Backtest data not built yet. Click <b>Rebuild data</b>.</div>'; });
+
+// ---------- Heatmap ----------
+let DAYS=null;
+fetch("/api/daily").then(r=>r.ok?r.json():Promise.reject()).then(d=>{
+  DAYS=d;
+  if(d.start) $("#range").textContent=`cache: ${d.start} → ${d.end}`;
+  const sel=$("#dateSel"); sel.innerHTML="";
+  d.days.slice().reverse().forEach(x=>{
+    const o=el("option"); o.value=x.date;
+    o.textContent=`${x.date}  (NIFTY ${fmt(x.nifty_change)}, ${x.market_bias})`;
+    sel.appendChild(o);
+  });
+  if(d.missing_symbols&&d.missing_symbols.length)
+    $("#hmNotice").innerHTML=`<div class="notice">No instrument key for: ${d.missing_symbols.join(", ")}</div>`;
+  sel.onchange=()=>loadDay(sel.value);
+  if(d.days.length) loadDay(sel.value);
+}).catch(()=>{ $("#sectorGrid").innerHTML='<div class="notice">Daily data not built yet. Click <b>Rebuild data</b>.</div>'; });
+
+function loadDay(day){
+  $("#drill").innerHTML="";
+  fetch("/api/daily/"+day).then(r=>r.json()).then(d=>{
+    $("#dayHead").innerHTML=`NIFTY 50 <b>${fmt(d.nifty_change)}</b> &nbsp;
+      bias <span class="tag ${d.market_bias}">${d.market_bias}</span> &nbsp;
+      ${d.direction?`trade direction <span class="tag ${d.direction}">${d.direction}</span>`:'<span class="muted">no trades (neutral)</span>'}`;
+    const g=$("#sectorGrid"); g.innerHTML="";
+    d.sectors.forEach(s=>{
+      const c=el("div","cell"+(s.selected?" selected":""));
+      c.style.background=heat(s.change);
+      c.innerHTML=`<div class="name">${s.name}</div>
+        <div class="val">${fmt(s.change)}</div>
+        <div class="sub">${s.classification}${s.selected?" · SELECTED":""}${s.has_constituents?"":" · no stocks"}</div>`;
+      c.onclick=()=>drill(d,s);
+      g.appendChild(c);
+    });
+  });
+}
+
+function drill(day,s){
+  const w=$("#drill"); w.innerHTML="";
+  const box=el("div","drill");
+  box.appendChild(el("h2",null,`${s.name} &mdash; ${day.date} &mdash; stock 09:30 % change`));
+  if(!s.stocks.length){ box.appendChild(el("p","muted","No constituent stock data for this sector/day.")); w.appendChild(box); return; }
+  const detail=el("div","stockDetail muted","Click a stock for its ORB trade detail.");
+  const g=el("div","grid");
+  s.stocks.slice().sort((a,b)=>b.change-a.change).forEach(st=>{
+    const c=el("div","cell"+(st.qualifies?" qual":""));
+    c.style.background=heat(st.change);
+    let line=st.momentum.replace(/_/g," ").toLowerCase();
+    if(st.direction_match===false) line="dir mismatch";
+    let tradeTag=st.trade?`<span class="tag ${st.trade.outcome}">${st.trade.outcome.replace("STOPPED_","SL ").replace("TARGET_HIT","TARGET").replace("EOD_EXIT","EOD")}</span>`:"";
+    c.innerHTML=`<div class="name">${st.symbol}</div>
+      <div class="val">${fmt(st.change)}</div>
+      <div class="sub">${line} ${tradeTag}</div>`;
+    c.onclick=()=>{
+      g.querySelectorAll(".cell").forEach(x=>x.classList.remove("picked"));
+      c.classList.add("picked");
+      if(!st.trade){
+        detail.className="stockDetail";
+        detail.innerHTML=`<b>${st.symbol}</b> &mdash; ${fmt(st.change)} at 09:30 &mdash;
+          <span class="muted">no ORB entry triggered</span><br>
+          momentum: <b>${st.momentum}</b> &nbsp; direction match: <b>${st.direction_match}</b>
+          &nbsp; strategy candidate: <b>${st.qualifies?"yes":"no"}</b>`;
+        return;
+      }
+      const t=st.trade;
+      detail.className="stockDetail";
+      detail.innerHTML=`<b>${st.symbol}</b> &mdash; ${t.direction} &mdash; ${fmt(st.change)} at 09:30
+        <span class="tag ${t.outcome}">${t.outcome}</span>
+        <table style="margin-top:8px;width:auto">
+          <tr><td>entry</td><td>${t.entry_time}</td><td>@ ${t.entry_price}</td></tr>
+          <tr><td>stop</td><td></td><td>@ ${t.stop_loss}</td></tr>
+          <tr><td>target</td><td></td><td>@ ${t.target}</td></tr>
+          <tr><td>exit</td><td>${t.exit_time}</td><td>@ ${t.exit_price}</td></tr>
+          <tr><td>hold</td><td colspan="2">${t.hold_minutes} min</td></tr>
+        </table>`;
+    };
+    g.appendChild(c);
+  });
+  box.appendChild(g);
+  box.appendChild(detail);
+  w.appendChild(box);
+  box.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+
+// ---------- Rebuild ----------
+$("#rebuild").onclick=()=>{
+  if(!confirm("Rerun the backtest + per-day matrix from the local candle cache? Takes ~1-2 min.")) return;
+  const b=$("#rebuild"); b.disabled=true; b.textContent="Rebuilding…";
+  fetch("/api/rebuild",{method:"POST"}).then(r=>r.json()).then(d=>{
+    b.disabled=false; b.textContent="Rebuild data";
+    alert((d.ok?"Done.\n\n":"Failed.\n\n")+(d.stdout||"")+(d.stderr||""));
+    if(d.ok) location.reload();
+  }).catch(()=>{b.disabled=false;b.textContent="Rebuild data";alert("Request failed.");});
+};
+</script>
+</body>
+</html>
