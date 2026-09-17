@@ -149,6 +149,33 @@ The **Rebuild data** button in the UI reruns `precompute_ui.py`.
 > new Upstox token, rerun `update_backtest_dashboard.py`, then
 > `precompute_ui.py` (or the Rebuild button).
 
+### Run it with Docker instead
+
+If the native setup above gives you trouble (e.g. Python version/pip
+issues on macOS), run the review UI in Docker instead — you still need
+`data_cache/` populated first (step 5, done on any machine), but skip
+the venv/Python setup entirely.
+
+```bash
+docker compose up --build
+```
+
+Open **http://localhost:5001**. This mounts your local `data_cache/`
+into the container (so it reads/writes the same candles and UI JSON as
+a native run) and `instruments_nse.json` read-only (only needed for the
+in-app **Rebuild data** button — comment that line out of
+`docker-compose.yml` if you don't have the file).
+
+Without Compose:
+
+```bash
+docker build -t upstox-review-ui .
+docker run --rm -p 5001:5001 \
+  -v "$(pwd)/data_cache:/app/data_cache" \
+  -v "$(pwd)/instruments_nse.json:/app/instruments_nse.json:ro" \
+  upstox-review-ui
+```
+
 ## Project layout
 
 ```
@@ -163,4 +190,5 @@ ui.py             the review web app  (port 5001)
 precompute_ui.py  builds the UI's JSON from the candle cache
 upstox_auth.py    one-off Upstox OAuth login  (port 5000)
 data_cache/       cached candles + generated UI JSON  (git-ignored)
+Dockerfile, docker-compose.yml   containerized review UI (see above)
 ```

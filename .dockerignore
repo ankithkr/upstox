@@ -1,0 +1,17 @@
+.git/
+venv/
+.venv/
+__pycache__/
+**/__pycache__/
+*.pyc
+
+# local caches / secrets (mounted as volumes instead, not baked into the image)
+data_cache/
+instruments_nse.json
+token.json
+token_google.json
+creds.json
+.env
+
+*.pdf
+README.md

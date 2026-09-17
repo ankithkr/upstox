@@ -102,4 +102,6 @@ def api_rebuild():
 
 
 if __name__ == "__main__":
-    app.run(port=5001, debug=True)
+    # 0.0.0.0 so the port mapping works when this runs inside Docker;
+    # still reachable at localhost:5001 when run directly.
+    app.run(host="0.0.0.0", port=5001, debug=True)

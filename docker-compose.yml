@@ -1,0 +1,11 @@
+services:
+  review-ui:
+    build: .
+    ports:
+      - "5001:5001"
+    volumes:
+      # the candle cache + precomputed ui_*.json (git-ignored, read from the host)
+      - ./data_cache:/app/data_cache
+      # only needed for the in-app "Rebuild data" button; comment out if you
+      # don't have this file yet (fetch it once via the update scripts on the host)
+      - ./instruments_nse.json:/app/instruments_nse.json:ro
