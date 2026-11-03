@@ -1,4 +1,4 @@
-import { api } from "./api";
+import { API_BASE, api } from "./api";
 import { EquityChart } from "./components/EquityChart";
 import { PositionsTable } from "./components/PositionsTable";
 import { StrategyConfigPanel } from "./components/StrategyConfigPanel";
@@ -19,9 +19,14 @@ export default function App() {
     <main className="app">
       <header className="header">
         <h1>Paper Trading Dashboard</h1>
-        <span className={`backend-badge ${backendOk ? "ok" : "down"}`}>
-          api-gateway: {health.error ? "unreachable" : health.data?.status ?? "checking..."}
-        </span>
+        <div className="header-actions">
+          <a className="connect-button" href={`${API_BASE}/auth/upstox/login`}>
+            Connect Upstox
+          </a>
+          <span className={`backend-badge ${backendOk ? "ok" : "down"}`}>
+            api-gateway: {health.error ? "unreachable" : health.data?.status ?? "checking..."}
+          </span>
+        </div>
       </header>
 
       <section className="summary">

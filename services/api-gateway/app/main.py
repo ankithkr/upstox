@@ -16,6 +16,7 @@ from shared.models import Trade
 
 from . import queries
 from .schemas import EquitySnapshotOut, StrategyConfigOut
+from .upstox_auth import router as upstox_auth_router
 
 app = FastAPI(title="paper-trading api-gateway")
 
@@ -25,6 +26,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(upstox_auth_router)
 
 
 @app.get("/health")

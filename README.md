@@ -42,22 +42,40 @@ in a local/object cache, not Postgres).
 
 ## Status
 
-Scaffolding only — every service currently just logs a heartbeat. See the
-build phases below for what's next.
+Phases 0-7 are done: every service is real (not a stub), unit-tested, and
+`docker compose build` succeeds for all five. The data-engine <-> Upstox
+integration (auth, WebSocket connect, protobuf decode) has been verified
+against the real Upstox API with live data. The full pipeline
+(data-engine -> strategy-engine -> risk-engine -> execution-engine) has
+**not yet been run together end-to-end** - that's the next milestone,
+blocking on the instrument universe being wired into `INSTRUMENT_KEYS`
+(currently just NIFTY 50) and a trading-session window to test in.
 
 | Phase | What it adds |
 |---|---|
 | 0 | Done: repo restructuring (`legacy/pre-rebuild` branch), this skeleton |
-| 1 | Supabase schema (`infra/supabase/migrations`), shared models, `Broker` interface stub |
-| 2 | `data-engine`: Upstox WebSocket client, candle aggregation, market-hours scheduler |
-| 3 | `strategy-engine`: port the v2 ORB rules from `legacy/pre-rebuild`'s `src/strategy` + `src/backtest` |
-| 4 | `risk-engine`: sizing, daily cap, capital checks |
-| 5 | `execution-engine`: `PaperBroker`, cost model ported from `legacy/pre-rebuild`'s `src/backtest/costs.py` |
-| 6 | `api-gateway`: REST/WS surface for the frontend |
-| 7 | `frontend`: the real dashboard |
-| 8 | Deploy: Render (background workers for the 4 engines, web service for `api-gateway`), Vercel (frontend), Supabase (DB) |
-| 9 | Operational runbook: daily Upstox re-auth, alerting, one full live paper session |
+| 1 | Done: Supabase schema (`infra/supabase/migrations`), shared models, `Broker` interface |
+| 2 | Done: `data-engine` - Upstox WebSocket client, candle aggregation, market-hours scheduler |
+| 3 | Done: `strategy-engine` - the v2 ORB rules ported from `legacy/pre-rebuild` |
+| 4 | Done: `risk-engine` - sizing, daily cap, capital checks |
+| 5 | Done: `execution-engine` - `PaperBroker`, real cost model |
+| 6 | Done: `api-gateway` - REST surface over Supabase, the Upstox OAuth flow |
+| 7 | Done: `frontend` - the live dashboard |
+| 8 | In progress: deploy. Pivoted from the original Render/managed-worker plan - Render's always-on background workers aren't free, and Oracle Cloud's Always Free tier needs a Visa/Mastercard/Amex (not available here). Current plan: backend runs locally (`docker compose up`, alive during NSE hours) + Supabase (done, real project) + Vercel for the frontend (free, no card). A managed cloud VM is a later upgrade once a compatible card is sorted. |
+| 9 | Operational runbook: one full live paper session end-to-end, alerting |
 | 10 (later) | Swap in `UpstoxLiveBroker`, add live-money guardrails |
+
+### Upstox login
+
+Upstox (and SEBI) require a fresh login every trading day - there's no way
+around this (see the commit history for why: their "extended token" is
+business-integration-only and read-only, and unofficial TOTP-replay tools
+aren't worth the credential exposure or ToS risk). The dashboard's
+**Connect Upstox** button (top right) handles it: it redirects to Upstox's
+real login page, and api-gateway's callback exchanges the code and saves
+the token to Supabase's `upstox_tokens` table, which `data-engine` reads
+from directly - no file to copy between services. `UPSTOX_REDIRECT_URI`
+must exactly match what's registered in your Upstox developer app.
 
 ## Local development
 
