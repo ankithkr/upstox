@@ -1,0 +1,44 @@
+Top 15 by TRAIN expectancy (net of costs), with their TEST result
+                                                n  win% E[R]net    netR    PF  maxDD    +mo
+BE1.5R,T2R T3 bvol>=2 risk/ATR>=0.3 openvol>=1.0 | train  128  42.2   0.207    26.5  1.41    9.5    42%
+BE1.5R,T2R T3 bvol>=2 risk/ATR>=0.3 openvol>=1.0 | test   74  39.2  -0.067    -4.9  0.89    9.6    50%
+noBE,T2R T2 bvol>=2 risk/ATR>=0.3 openvol>=1.0 | train  128  49.2   0.196    25.1  1.38    9.5    54%
+noBE,T2R T2 bvol>=2 risk/ATR>=0.3 openvol>=1.0 | test   74  41.9  -0.080    -5.9  0.86   10.6    50%
+BE1.5R,T2R T3 bvol>=1.5 risk/ATR>=0.3 openvol>=1.0 | train  138  42.8   0.193    26.7  1.38   11.4    50%
+BE1.5R,T2R T3 bvol>=1.5 risk/ATR>=0.3 openvol>=1.0 | test   86  41.9   0.021     1.8  1.04    7.8    55%
+noBE,T2R T3 bvol>=2 risk/ATR>=0.3 openvol>=1.0 | train  128  45.3   0.186    23.8  1.33    9.5    42%
+noBE,T2R T3 bvol>=2 risk/ATR>=0.3 openvol>=1.0 | test   74  40.5  -0.076    -5.7  0.87    9.6    50%
+BE1.5R,T2R T3 bvol>=0 risk/ATR>=0.3 openvol>=1.0 | train  148  41.9   0.175    26.0  1.34   12.1    54%
+BE1.5R,T2R T3 bvol>=0 risk/ATR>=0.3 openvol>=1.0 | test   94  43.6   0.106    10.0  1.20    7.8    60%
+noBE,T2R T3 bvol>=1.5 risk/ATR>=0.3 openvol>=1.0 | train  138  45.7   0.174    24.0  1.31   10.9    46%
+noBE,T2R T3 bvol>=1.5 risk/ATR>=0.3 openvol>=1.0 | test   86  43.0   0.013     1.1  1.02    8.5    55%
+BE1.5R,T2R T2 bvol>=2 risk/ATR>=0.3 openvol>=1.0 | train  128  46.9   0.170    21.8  1.34    9.5    54%
+BE1.5R,T2R T2 bvol>=2 risk/ATR>=0.3 openvol>=1.0 | test   74  40.5  -0.107    -7.9  0.82   10.6    50%
+noBE,T2R T2 bvol>=1.5 risk/ATR>=0.3 openvol>=1.0 | train  138  49.3   0.169    23.3  1.33   10.8    54%
+noBE,T2R T2 bvol>=1.5 risk/ATR>=0.3 openvol>=1.0 | test   86  44.2  -0.013    -1.1  0.98    8.6    55%
+BE1.5R,T2R T3 bvol>=3 risk/ATR>=0.25 openvol>=1.0 | train  127  43.3   0.164    20.8  1.32   13.3    54%
+BE1.5R,T2R T3 bvol>=3 risk/ATR>=0.25 openvol>=1.0 | test   87  36.8  -0.112    -9.7  0.81   21.5    44%
+noBE,T2R T3 bvol>=0 risk/ATR>=0.3 openvol>=1.0 | train  148  45.3   0.164    24.2  1.29   12.1    54%
+noBE,T2R T3 bvol>=0 risk/ATR>=0.3 openvol>=1.0 | test   94  44.7   0.099     9.3  1.18    8.5    60%
+noBE,T2R T2 bvol>=3 risk/ATR>=0.25 openvol>=1.0 | train  127  50.4   0.155    19.6  1.30   13.1    58%
+noBE,T2R T2 bvol>=3 risk/ATR>=0.25 openvol>=1.0 | test   87  40.2  -0.129   -11.2  0.79   21.3    39%
+noBE,T2R T2 bvol>=0 risk/ATR>=0.3 openvol>=1.0 | train  148  48.6   0.153    22.7  1.29   12.1    62%
+noBE,T2R T2 bvol>=0 risk/ATR>=0.3 openvol>=1.0 | test   94  45.7   0.043     4.0  1.08    7.8    55%
+noBE,T2R T2 bvol>=3 risk/ATR>=0.3 openvol>=0 | train  124  49.2   0.150    18.6  1.32    7.9    54%
+noBE,T2R T2 bvol>=3 risk/ATR>=0.3 openvol>=0 | test   76  40.8  -0.047    -3.6  0.91   11.6    47%
+BE1.5R,T2R T3 bvol>=1.5 risk/ATR>=0.25 openvol>=1.0 | train  191  41.9   0.148    28.2  1.28   11.8    58%
+BE1.5R,T2R T3 bvol>=1.5 risk/ATR>=0.25 openvol>=1.0 | test  159  39.0   0.018     2.8  1.03   17.6    45%
+BE1.5R,T2R T2 bvol>=1.5 risk/ATR>=0.3 openvol>=1.0 | train  138  47.1   0.145    20.0  1.29   10.8    54%
+BE1.5R,T2R T2 bvol>=1.5 risk/ATR>=0.3 openvol>=1.0 | test   86  43.0  -0.036    -3.1  0.94    8.8    55%
+
+Best by TEST (for reference only - not a valid pick):
+BE1.5R,T2R T3 bvol>=0 risk/ATR>=0.3 openvol>=1.0 | train  148  41.9   0.175    26.0  1.34   12.1    54%
+BE1.5R,T2R T3 bvol>=0 risk/ATR>=0.3 openvol>=1.0 | test   94  43.6   0.106    10.0  1.20    7.8    60%
+noBE,T2R T3 bvol>=0 risk/ATR>=0.3 openvol>=1.0 | train  148  45.3   0.164    24.2  1.29   12.1    54%
+noBE,T2R T3 bvol>=0 risk/ATR>=0.3 openvol>=1.0 | test   94  44.7   0.099     9.3  1.18    8.5    60%
+BE1R,T2R T3 bvol>=0 risk/ATR>=0.3 openvol>=1.0 | train  148  35.1   0.068    10.0  1.13   12.2    46%
+BE1R,T2R T3 bvol>=0 risk/ATR>=0.3 openvol>=1.0 | test   94  41.5   0.092     8.7  1.18    8.8    60%
+BE1.5R,T2R T3 bvol>=2 risk/ATR>=0.25 openvol>=0 | train  209  40.7   0.073    15.2  1.14   13.9    46%
+BE1.5R,T2R T3 bvol>=2 risk/ATR>=0.25 openvol>=0 | test  186  43.0   0.066    12.3  1.12   14.8    50%
+noBE,T2R T3 bvol>=2 risk/ATR>=0.25 openvol>=0 | train  209  44.5   0.074    15.5  1.13   15.3    46%
+noBE,T2R T3 bvol>=2 risk/ATR>=0.25 openvol>=0 | test  186  45.2   0.057    10.6  1.10   15.8    50%

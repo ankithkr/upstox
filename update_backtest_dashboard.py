@@ -1,22 +1,22 @@
-"""Run the top-down ORB backtest and write results to Google Sheets.
+"""Run the top-down ORB backtest over the cached candles and write results to Google Sheets.
 
 'Backtest dahboard' (sheet 1, renamed by hand) gets the summary
-tables; 'Backtest Trades' gets the raw list of every triggered entry.
-Rerunning refreshes both in place.
+tables; 'Backtest Trades' gets the raw list of every trade taken.
+Rerunning refreshes both in place. Reads the local candle cache only -
+run `python refresh_cache.py` first to bring it up to date.
 """
 
-from datetime import date, timedelta
-
 from src.backtest import dashboard
-from src.backtest.reference_values import trading_days
-from src.backtest.runner import run_backtest
-from src.data.indices import NIFTY_50_INSTRUMENT_KEY
+from src.backtest.history import load_history
+from src.backtest.snapshots import compute_day_snapshots, taken_trades
 from src.integrations.google_sheets import get_or_create_worksheet, get_spreadsheet
-from src.integrations.upstox_history import get_candles
 
 DASHBOARD_SHEET = "Backtest dahboard"  # matches the sheet name as renamed in the spreadsheet
 TRADES_SHEET = "Backtest Trades"
-BACKTEST_MONTHS_BACK = 182  # ~6 months
+
+
+def _group_header(label):
+    return [label, "Trades", "Target hit", "Target hit %", "Net R", "Net R / trade"]
 
 TRADE_COLUMNS = [
     "date",
@@ -26,25 +26,23 @@ TRADE_COLUMNS = [
     "market_bias",
     "sector_change",
     "stock_change",
+    "vix",
+    "nifty_trend",
+    "open_vol_ratio",
+    "breakout_vol_ratio",
     "breakout_time",
     "entry_time",
     "entry_price",
     "stop_loss",
+    "risk_pct",
     "target",
     "outcome",
     "exit_time",
     "exit_price",
     "hold_minutes",
-    "achieved_1_2_by_close",
+    "r_multiple",
+    "net_r",
 ]
-
-
-def _latest_trading_day() -> date:
-    today = date.today()
-    candles = get_candles(NIFTY_50_INSTRUMENT_KEY, "days", "1", today - timedelta(days=14), today)
-    if not candles:
-        raise RuntimeError("No recent NIFTY 50 daily candles found to anchor the backtest end date")
-    return date.fromisoformat(candles[-1][0][:10])
 
 
 def write_trades_sheet(spreadsheet, trades: list[dict]):
@@ -57,11 +55,11 @@ def write_trades_sheet(spreadsheet, trades: list[dict]):
     return worksheet
 
 
-def write_dashboard_sheet(spreadsheet, trades: list[dict], start_date, end_date, days_count):
+def write_dashboard_sheet(spreadsheet, trades: list[dict], start_date, end_date, days_count, gate_open_days):
     worksheet = spreadsheet.worksheet(DASHBOARD_SHEET)
     worksheet.clear()
 
-    ov = dashboard.overview(trades, start_date, end_date, days_count)
+    ov = dashboard.overview(trades, start_date, end_date, days_count, gate_open_days)
     metrics = dashboard.key_metrics(trades)
 
     rows = [
@@ -72,21 +70,31 @@ def write_dashboard_sheet(spreadsheet, trades: list[dict], start_date, end_date,
         ["Total signals", ov["total_signals"]],
         ["Unique signals (date + symbol + direction)", ov["unique_signals"]],
         [],
-        ["Win rate (target hit by close)", f"{metrics['win_rate_pct']}%"],
+        ["Regime-gate-open days", ov["gate_open_days"]],
+        ["Days traded", ov["days_traded"]],
+        [],
+        ["Net R per trade (after costs)", metrics["avg_net_r"]],
+        ["Total net R", metrics["total_net_r"]],
+        ["Profit factor", metrics["profit_factor"]],
+        ["Max drawdown (R)", metrics["max_drawdown_r"]],
+        ["Profitable trades", f"{metrics['profitable_pct']}%"],
+        ["Hit target", f"{metrics['win_rate_pct']}%"],
+        ["Avg stop (% of price)", metrics["avg_stop_pct"]],
         ["Avg hold time - all trades (min)", metrics["avg_hold_minutes"]],
-        ["Avg hold time - target hit (min)", metrics["avg_hold_minutes_target_hit"]],
-        ["Avg hold time - stopped loss (min)", metrics["avg_hold_minutes_stopped_loss"]],
         [],
         ["Outcome", "Count", "% of total"],
         *[list(r) for r in dashboard.outcome_breakdown(trades)],
         [],
-        ["Month", "Trades", "Target Hit", "Win Rate %"],
+        _group_header("Year"),
+        *[list(r) for r in dashboard.by_year(trades)],
+        [],
+        _group_header("Month"),
         *[list(r) for r in dashboard.by_month(trades)],
         [],
-        ["Sector", "Trades", "Target Hit", "Win Rate %"],
+        _group_header("Sector"),
         *[list(r) for r in dashboard.by_sector(trades)],
         [],
-        ["Direction", "Trades", "Target Hit", "Win Rate %"],
+        _group_header("Direction"),
         *[list(r) for r in dashboard.by_direction(trades)],
     ]
 
@@ -97,19 +105,15 @@ def write_dashboard_sheet(spreadsheet, trades: list[dict], start_date, end_date,
 def main():
     spreadsheet = get_spreadsheet()
 
-    end_date = _latest_trading_day()
-    start_date = end_date - timedelta(days=BACKTEST_MONTHS_BACK)
-
-    print(f"Running backtest: {start_date} to {end_date}...")
-    trades = run_backtest(start_date, end_date)
-
-    nifty_15m = get_candles(NIFTY_50_INSTRUMENT_KEY, "minutes", "15", start_date, end_date)
-    days_count = len(trading_days(nifty_15m))
+    print("Running backtest over the cached candles...")
+    days = compute_day_snapshots(load_history())
+    trades = taken_trades(days)
+    gate_open_days = sum(1 for d in days if d["gate_ok"])
 
     write_trades_sheet(spreadsheet, trades)
-    write_dashboard_sheet(spreadsheet, trades, start_date, end_date, days_count)
+    write_dashboard_sheet(spreadsheet, trades, days[0]["date"], days[-1]["date"], len(days), gate_open_days)
 
-    print(f"Done: {len(trades)} signals across {days_count} trading days")
+    print(f"Done: {len(trades)} trades across {len(days)} trading days")
 
 
 if __name__ == "__main__":

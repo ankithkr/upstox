@@ -1,0 +1,42 @@
+256 configs
+
+Family medians (train E / test E / n configs / %positive in BOTH):
+  mode=breakout  trainE +0.002  testE +0.008  n=128  both+   34%
+  mode=retest    trainE -0.027  testE +0.015  n=128  both+   20%
+  orn=3         trainE -0.038  testE +0.014  n=128  both+    9%
+  orn=6         trainE +0.014  testE +0.005  n=128  both+   45%
+  k=0.4       trainE -0.004  testE +0.006  n= 64  both+   33%
+  k=0.5       trainE -0.003  testE +0.011  n= 64  both+   36%
+  k=0.7       trainE -0.016  testE +0.016  n= 64  both+   25%
+  k=1.0       trainE -0.022  testE +0.015  n= 64  both+   12%
+  exit=BE1.5     trainE -0.011  testE +0.012  n=128  both+   27%
+  exit=noBE      trainE -0.014  testE +0.014  n=128  both+   26%
+  tgt=2.0       trainE -0.014  testE +0.009  n=128  both+   24%
+  tgt=3.0       trainE -0.011  testE +0.015  n=128  both+   29%
+  bv=0         trainE -0.018  testE +0.006  n=128  both+   26%
+  bv=1.5       trainE -0.005  testE +0.016  n=128  both+   27%
+  vol=0         trainE -0.019  testE -0.015  n=128  both+    1%
+  vol=1.0       trainE +0.006  testE +0.035  n=128  both+   52%
+
+Top 10 by TRAIN E, with TEST:
+                                                n  win% E[R]net    netR    PF  maxDD    +mo
+breakout or6 floor0.4 BE1.5 T3 bv1.5 vol1.0 | train  292  48.6   0.101    29.6  1.25   12.3    62%
+breakout or6 floor0.4 BE1.5 T3 bv1.5 vol1.0 | test  288  47.2   0.028     7.9  1.06   18.8    55%
+breakout or6 floor0.4 BE1.5 T3 bv0 vol1.0 | train  333  48.0   0.099    32.9  1.24   12.9    54%
+breakout or6 floor0.4 BE1.5 T3 bv0 vol1.0 | test  361  47.1   0.017     6.2  1.04   19.1    65%
+breakout or6 floor0.4 noBE T3 bv1.5 vol1.0 | train  292  50.3   0.093    27.1  1.22   12.0    58%
+breakout or6 floor0.4 noBE T3 bv1.5 vol1.0 | test  288  47.9   0.026     7.4  1.06   19.8    55%
+breakout or6 floor0.4 noBE T3 bv0 vol1.0 | train  333  49.8   0.090    30.1  1.21   12.8    54%
+breakout or6 floor0.4 noBE T3 bv0 vol1.0 | test  361  47.6   0.019     6.7  1.04   19.1    65%
+retest or6 floor0.4 BE1.5 T3 bv1.5 vol1.0 | train  235  49.4   0.089    20.8  1.21   10.2    65%
+retest or6 floor0.4 BE1.5 T3 bv1.5 vol1.0 | test  267  50.9   0.093    24.9  1.23   19.9    60%
+breakout or6 floor0.5 BE1.5 T3 bv1.5 vol1.0 | train  292  50.3   0.087    25.3  1.25   11.3    58%
+breakout or6 floor0.5 BE1.5 T3 bv1.5 vol1.0 | test  288  50.3   0.042    12.0  1.12   16.7    55%
+retest or6 floor0.4 BE1.5 T3 bv0 vol1.0 | train  281  49.8   0.083    23.4  1.20    9.8    70%
+retest or6 floor0.4 BE1.5 T3 bv0 vol1.0 | test  340  50.6   0.064    21.9  1.16   14.4    60%
+breakout or6 floor0.5 noBE T3 bv1.5 vol1.0 | train  292  51.0   0.082    24.0  1.23   10.8    58%
+breakout or6 floor0.5 noBE T3 bv1.5 vol1.0 | test  288  50.7   0.039    11.2  1.11   17.5    55%
+breakout or6 floor0.5 BE1.5 T3 bv0 vol1.0 | train  333  50.2   0.079    26.3  1.22   11.6    54%
+breakout or6 floor0.5 BE1.5 T3 bv0 vol1.0 | test  361  50.1   0.037    13.2  1.11   16.8    70%
+retest or6 floor0.4 noBE T3 bv1.5 vol1.0 | train  235  49.8   0.079    18.5  1.18    9.8    65%
+retest or6 floor0.4 noBE T3 bv1.5 vol1.0 | test  267  51.3   0.086    22.9  1.20   20.9    60%

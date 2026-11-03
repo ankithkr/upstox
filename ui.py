@@ -1,8 +1,8 @@
 """Local backtest review UI.
 
-A small Flask app for eyeballing the ORB strategy's universe, the
-backtest results, and a per-day sector -> stock heatmap so setups can
-be replayed by hand. All data is served from the JSON files written by
+A small Flask app for reading the ORB strategy's rules, eyeballing its
+universe and backtest results, and replaying any day by hand through a
+sector -> stock heatmap that shows which filter accepted or rejected each name. All data is served from the JSON files written by
 precompute_ui.py (which in turn read the local Upstox candle cache);
 nothing here calls Upstox or Google at request time.
 
@@ -16,8 +16,10 @@ from pathlib import Path
 
 from flask import Flask, jsonify, render_template
 
-from src.data.indices import SECTOR_INDEX_INSTRUMENT_KEYS, SECTOR_INDICES
+from src.data.indices import SECTOR_INDEX_INSTRUMENT_KEYS
 from src.data.stocks import INDEX_CONSTITUENTS
+from src.data.universe import LIQUID_UNIVERSE, V2_SECTORS
+from src.strategy.params import DEFAULT_PARAMS, describe
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data_cache"
@@ -27,11 +29,21 @@ DAILY_JSON = DATA_DIR / "ui_daily.json"
 app = Flask(__name__, template_folder="webui/templates")
 
 
+_CACHE: dict[Path, tuple[float, dict]] = {}
+
+
 def _load(path: Path):
+    """Parse a precomputed JSON, re-reading only when the file changes (ui_daily.json is ~20 MB)."""
     if not path.exists():
         return None
+    mtime = path.stat().st_mtime
+    hit = _CACHE.get(path)
+    if hit and hit[0] == mtime:
+        return hit[1]
     with open(path) as f:
-        return json.load(f)
+        data = json.load(f)
+    _CACHE[path] = (mtime, data)
+    return data
 
 
 @app.route("/")
@@ -39,18 +51,26 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/api/strategy")
+def api_strategy():
+    return jsonify({"params": DEFAULT_PARAMS.as_dict(), "rules": describe(DEFAULT_PARAMS)})
+
+
 @app.route("/api/matrix")
 def api_matrix():
+    universe = set(LIQUID_UNIVERSE)
     rows = []
-    for name in SECTOR_INDICES:
+    for name in V2_SECTORS:
+        constituents = INDEX_CONSTITUENTS.get(name, [])
         rows.append(
             {
                 "sector": name,
                 "instrument_key": SECTOR_INDEX_INSTRUMENT_KEYS.get(name),
-                "stocks": INDEX_CONSTITUENTS.get(name, []),
+                "stocks": [s for s in constituents if s in universe],
+                "excluded": [s for s in constituents if s not in universe],
             }
         )
-    return jsonify({"sectors": rows})
+    return jsonify({"sectors": rows, "universe_size": len(universe)})
 
 
 @app.route("/api/backtest")
@@ -72,6 +92,9 @@ def api_daily():
             "nifty_change": d["nifty_change"],
             "market_bias": d["market_bias"],
             "direction": d["direction"],
+            "gate_ok": d["gate_ok"],
+            "vix": d["vix"],
+            "trades_taken": d["trades_taken"],
             "selected_sectors": [s["name"] for s in d["sectors"] if s["selected"]],
         }
         for d in sorted(data["days"].values(), key=lambda x: x["date"])

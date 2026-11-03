@@ -1,0 +1,79 @@
+== threshold sensitivity (cap3). rows: VIX max, cols: trend min
+
+ F breakout
+  VIX<12 trend>-99           train n= 88 E=+0.108 PF=1.26 | test n= 66 E=+0.190 PF=1.45 | all n=154 E=+0.143 PF=1.34
+  VIX<12 trend>0             train n= 57 E=+0.093 PF=1.22 | test n= 39 E=+0.190 PF=1.47 | all n= 96 E=+0.133 PF=1.32
+  VIX<12 trend>0.5           train n= 53 E=-0.007 PF=0.98 | test n= 29 E=+0.231 PF=1.53 | all n= 82 E=+0.077 PF=1.18
+  VIX<12 trend>1.0           train n= 39 E=-0.037 PF=0.91 | test n= 23 E=+0.310 PF=1.73 | all n= 62 E=+0.092 PF=1.21
+  VIX<13 trend>-99           train n=143 E=+0.080 PF=1.18 | test n= 92 E=+0.108 PF=1.23 | all n=235 E=+0.091 PF=1.20
+  VIX<13 trend>0             train n= 97 E=+0.114 PF=1.27 | test n= 53 E=+0.247 PF=1.61 | all n=150 E=+0.161 PF=1.38
+  VIX<13 trend>0.5           train n= 91 E=+0.057 PF=1.13 | test n= 35 E=+0.329 PF=1.78 | all n=126 E=+0.132 PF=1.30
+  VIX<13 trend>1.0           train n= 66 E=+0.009 PF=1.02 | test n= 29 E=+0.412 PF=1.99 | all n= 95 E=+0.132 PF=1.29
+  VIX<14 trend>-99           train n=195 E=+0.156 PF=1.38 | test n=138 E=+0.111 PF=1.26 | all n=333 E=+0.138 PF=1.33
+  VIX<14 trend>0             train n=120 E=+0.170 PF=1.41 | test n= 76 E=+0.245 PF=1.64 | all n=196 E=+0.199 PF=1.50
+  VIX<14 trend>0.5           train n=112 E=+0.128 PF=1.30 | test n= 55 E=+0.327 PF=1.85 | all n=167 E=+0.194 PF=1.47
+  VIX<14 trend>1.0           train n= 84 E=+0.119 PF=1.28 | test n= 46 E=+0.403 PF=2.06 | all n=130 E=+0.220 PF=1.53
+  VIX<15 trend>-99           train n=230 E=+0.126 PF=1.31 | test n=171 E=+0.076 PF=1.17 | all n=401 E=+0.105 PF=1.24
+  VIX<15 trend>0             train n=145 E=+0.142 PF=1.35 | test n= 98 E=+0.207 PF=1.49 | all n=243 E=+0.168 PF=1.41
+  VIX<15 trend>0.5           train n=132 E=+0.129 PF=1.31 | test n= 69 E=+0.322 PF=1.76 | all n=201 E=+0.195 PF=1.47
+  VIX<15 trend>1.0           train n= 98 E=+0.078 PF=1.18 | test n= 56 E=+0.379 PF=1.92 | all n=154 E=+0.187 PF=1.44
+  VIX<16 trend>-99           train n=263 E=+0.118 PF=1.29 | test n=195 E=+0.050 PF=1.11 | all n=458 E=+0.089 PF=1.21
+  VIX<16 trend>0             train n=162 E=+0.149 PF=1.37 | test n=111 E=+0.205 PF=1.51 | all n=273 E=+0.172 PF=1.43
+  VIX<16 trend>0.5           train n=145 E=+0.134 PF=1.33 | test n= 82 E=+0.302 PF=1.76 | all n=227 E=+0.195 PF=1.48
+  VIX<16 trend>1.0           train n=109 E=+0.100 PF=1.24 | test n= 69 E=+0.344 PF=1.90 | all n=178 E=+0.195 PF=1.48
+  VIX<99 trend>-99           train n=292 E=+0.101 PF=1.25 | test n=288 E=+0.028 PF=1.06 | all n=580 E=+0.065 PF=1.16
+  VIX<99 trend>0             train n=172 E=+0.141 PF=1.35 | test n=163 E=+0.111 PF=1.27 | all n=335 E=+0.126 PF=1.31
+  VIX<99 trend>0.5           train n=151 E=+0.144 PF=1.36 | test n=129 E=+0.151 PF=1.36 | all n=280 E=+0.147 PF=1.36
+  VIX<99 trend>1.0           train n=113 E=+0.102 PF=1.24 | test n=116 E=+0.160 PF=1.39 | all n=229 E=+0.131 PF=1.31
+
+ R retest
+  VIX<12 trend>-99           train n= 73 E=+0.277 PF=1.87 | test n= 61 E=+0.366 PF=2.10 | all n=134 E=+0.318 PF=1.98
+  VIX<12 trend>0             train n= 50 E=+0.395 PF=2.29 | test n= 35 E=+0.334 PF=2.15 | all n= 85 E=+0.370 PF=2.24
+  VIX<12 trend>0.5           train n= 47 E=+0.286 PF=1.88 | test n= 28 E=+0.469 PF=2.64 | all n= 75 E=+0.354 PF=2.14
+  VIX<12 trend>1.0           train n= 35 E=+0.296 PF=1.97 | test n= 22 E=+0.690 PF=3.74 | all n= 57 E=+0.448 PF=2.57
+  VIX<13 trend>-99           train n=120 E=+0.222 PF=1.58 | test n= 86 E=+0.260 PF=1.64 | all n=206 E=+0.238 PF=1.61
+  VIX<13 trend>0             train n= 85 E=+0.332 PF=1.91 | test n= 48 E=+0.416 PF=2.27 | all n=133 E=+0.363 PF=2.03
+  VIX<13 trend>0.5           train n= 80 E=+0.266 PF=1.69 | test n= 34 E=+0.393 PF=2.07 | all n=114 E=+0.304 PF=1.80
+  VIX<13 trend>1.0           train n= 61 E=+0.259 PF=1.66 | test n= 28 E=+0.550 PF=2.54 | all n= 89 E=+0.351 PF=1.92
+  VIX<14 trend>-99           train n=165 E=+0.152 PF=1.37 | test n=128 E=+0.236 PF=1.60 | all n=293 E=+0.189 PF=1.47
+  VIX<14 trend>0             train n=108 E=+0.241 PF=1.58 | test n= 67 E=+0.404 PF=2.29 | all n=175 E=+0.303 PF=1.81
+  VIX<14 trend>0.5           train n=101 E=+0.186 PF=1.44 | test n= 50 E=+0.442 PF=2.44 | all n=151 E=+0.271 PF=1.70
+  VIX<14 trend>1.0           train n= 81 E=+0.179 PF=1.42 | test n= 42 E=+0.577 PF=2.90 | all n=123 E=+0.315 PF=1.81
+  VIX<15 trend>-99           train n=190 E=+0.115 PF=1.28 | test n=161 E=+0.192 PF=1.47 | all n=351 E=+0.150 PF=1.37
+  VIX<15 trend>0             train n=128 E=+0.181 PF=1.44 | test n= 89 E=+0.359 PF=2.09 | all n=217 E=+0.254 PF=1.67
+  VIX<15 trend>0.5           train n=119 E=+0.142 PF=1.34 | test n= 64 E=+0.442 PF=2.42 | all n=183 E=+0.247 PF=1.64
+  VIX<15 trend>1.0           train n= 96 E=+0.137 PF=1.32 | test n= 52 E=+0.605 PF=3.09 | all n=148 E=+0.302 PF=1.79
+  VIX<16 trend>-99           train n=212 E=+0.084 PF=1.20 | test n=184 E=+0.182 PF=1.45 | all n=396 E=+0.130 PF=1.31
+  VIX<16 trend>0             train n=138 E=+0.163 PF=1.39 | test n=101 E=+0.353 PF=2.11 | all n=239 E=+0.243 PF=1.65
+  VIX<16 trend>0.5           train n=126 E=+0.116 PF=1.27 | test n= 76 E=+0.421 PF=2.41 | all n=202 E=+0.231 PF=1.61
+  VIX<16 trend>1.0           train n=101 E=+0.113 PF=1.26 | test n= 64 E=+0.550 PF=2.97 | all n=165 E=+0.282 PF=1.75
+  VIX<99 trend>-99           train n=235 E=+0.089 PF=1.21 | test n=267 E=+0.093 PF=1.23 | all n=502 E=+0.091 PF=1.22
+  VIX<99 trend>0             train n=148 E=+0.163 PF=1.39 | test n=152 E=+0.179 PF=1.48 | all n=300 E=+0.171 PF=1.43
+  VIX<99 trend>0.5           train n=132 E=+0.114 PF=1.27 | test n=121 E=+0.206 PF=1.56 | all n=253 E=+0.158 PF=1.40
+  VIX<99 trend>1.0           train n=105 E=+0.093 PF=1.21 | test n=109 E=+0.258 PF=1.71 | all n=214 E=+0.177 PF=1.44
+
+== retest fill realism: need price to trade THROUGH the level by x% (gate VIX<14 & trend>0)
+  fill buffer 0%             train n=108 E=+0.241 PF=1.58 | test n= 67 E=+0.404 PF=2.29 | all n=175 E=+0.303 PF=1.81
+  fill buffer 0.05%          train n= 96 E=+0.108 PF=1.22 | test n= 60 E=+0.268 PF=1.73 | all n=156 E=+0.169 PF=1.39
+  fill buffer 0.1%           train n= 85 E=-0.064 PF=0.88 | test n= 53 E=+0.214 PF=1.51 | all n=138 E=+0.043 PF=1.09
+  fill buffer 0.2%           train n= 53 E=-0.271 PF=0.56 | test n= 41 E=+0.055 PF=1.11 | all n= 94 E=-0.129 PF=0.77
+
+== retest window (candles to wait for pullback)
+  window 3                   train n= 99 E=+0.234 PF=1.56 | test n= 65 E=+0.330 PF=1.98 | all n=164 E=+0.272 PF=1.71
+  window 6                   train n=108 E=+0.241 PF=1.58 | test n= 67 E=+0.404 PF=2.29 | all n=175 E=+0.303 PF=1.81
+  window 12                  train n=112 E=+0.218 PF=1.52 | test n= 70 E=+0.363 PF=2.12 | all n=182 E=+0.274 PF=1.72
+
+== universe size: top-N most-liquid stocks only (R retest, gate)
+  top 40 stocks              train n= 64 E=+0.361 PF=1.83 | test n= 40 E=+0.367 PF=2.39 | all n=104 E=+0.363 PF=1.99
+  top 60 stocks              train n= 74 E=+0.362 PF=1.91 | test n= 50 E=+0.336 PF=2.20 | all n=124 E=+0.352 PF=2.00
+  top 120 stocks             train n=108 E=+0.241 PF=1.58 | test n= 67 E=+0.404 PF=2.29 | all n=175 E=+0.303 PF=1.81
+
+== per-day cap sensitivity (R retest gate)
+  cap 1/day                  train n= 50 E=+0.247 PF=1.59 | test n= 29 E=+0.471 PF=2.82 | all n= 79 E=+0.329 PF=1.91
+  cap 2/day                  train n= 85 E=+0.235 PF=1.54 | test n= 52 E=+0.402 PF=2.35 | all n=137 E=+0.298 PF=1.78
+  cap 3/day                  train n=108 E=+0.241 PF=1.58 | test n= 67 E=+0.404 PF=2.29 | all n=175 E=+0.303 PF=1.81
+  cap 5/day                  train n=120 E=+0.212 PF=1.50 | test n= 80 E=+0.337 PF=1.98 | all n=200 E=+0.262 PF=1.67
+  cap 99/day                 train n=123 E=+0.209 PF=1.50 | test n= 92 E=+0.269 PF=1.77 | all n=215 E=+0.235 PF=1.61
+
+== combined F+R (R preferred, F fills gaps), cap3
+  F+R union                  train n=128 E=+0.216 PF=1.54 | test n= 77 E=+0.450 PF=2.46 | all n=205 E=+0.304 PF=1.83

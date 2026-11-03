@@ -1,0 +1,32 @@
+                                                n  win% E[R]net    netR    PF  maxDD    +mo
+floor0.4ATR BE1.5 T3 bvol>=1.5 openvol>=1.0 | train  315  41.9   0.048    15.2  1.10   22.9    50%
+floor0.4ATR BE1.5 T3 bvol>=1.5 openvol>=1.0 | test  313  47.3   0.033    10.3  1.07   15.6    60%
+floor0.5ATR BE1.5 T3 bvol>=1.5 openvol>=1.0 | train  315  44.4   0.039    12.4  1.09   17.3    54%
+floor0.5ATR BE1.5 T3 bvol>=1.5 openvol>=1.0 | test  313  48.2   0.036    11.2  1.10   15.3    55%
+floor0.4ATR BE1.5 T3 bvol>=0 openvol>=1.0 | train  382  41.6   0.036    13.8  1.07   28.0    46%
+floor0.4ATR BE1.5 T3 bvol>=0 openvol>=1.0 | test  395  46.6   0.023     9.0  1.05   20.2    60%
+floor0.4ATR noBE T3 bvol>=1.5 openvol>=1.0 | train  315  43.8   0.034    10.8  1.07   25.1    50%
+floor0.4ATR noBE T3 bvol>=1.5 openvol>=1.0 | test  313  48.2   0.035    10.9  1.08   15.6    60%
+floor0.5ATR BE1.5 T3 bvol>=1.5 openvol>=0 | train  404  44.6   0.026    10.6  1.06   18.7    50%
+floor0.5ATR BE1.5 T3 bvol>=1.5 openvol>=0 | test  406  46.1  -0.013    -5.4  0.97   26.2    55%
+floor0.25ATR noBE T3 bvol>=1.5 openvol>=0 | train  404  41.3   0.025    10.0  1.04   23.4    54%
+floor0.25ATR noBE T3 bvol>=1.5 openvol>=0 | test  406  40.9  -0.056   -22.8  0.91   36.7    40%
+floor0.5ATR noBE T3 bvol>=1.5 openvol>=1.0 | train  315  45.1   0.021     6.8  1.05   19.9    54%
+floor0.5ATR noBE T3 bvol>=1.5 openvol>=1.0 | test  313  48.9   0.037    11.7  1.10   15.0    55%
+floor0.4ATR BE1.5 T3 bvol>=1.5 openvol>=0 | train  404  41.8   0.020     8.3  1.04   22.4    54%
+floor0.4ATR BE1.5 T3 bvol>=1.5 openvol>=0 | test  406  45.1  -0.012    -5.0  0.97   26.0    55%
+floor0.4ATR noBE T3 bvol>=1.5 openvol>=0 | train  404  44.1   0.020     8.0  1.04   23.8    50%
+floor0.4ATR noBE T3 bvol>=1.5 openvol>=0 | test  406  46.3  -0.009    -3.7  0.98   26.0    60%
+floor0.5ATR BE1.5 T3 bvol>=0 openvol>=1.0 | train  382  44.2   0.019     7.2  1.04   22.1    46%
+floor0.5ATR BE1.5 T3 bvol>=0 openvol>=1.0 | test  395  48.6   0.035    13.8  1.10   15.9    55%
+floor0.5ATR BE1 T3 bvol>=1.5 openvol>=1.0 | train  315  41.0   0.015     4.7  1.04   18.4    50%
+floor0.5ATR BE1 T3 bvol>=1.5 openvol>=1.0 | test  313  47.3   0.044    13.8  1.12   15.0    60%
+floor0.5ATR noBE T3 bvol>=1.5 openvol>=0 | train  404  45.3   0.013     5.3  1.03   18.7    50%
+floor0.5ATR noBE T3 bvol>=1.5 openvol>=0 | test  406  46.8  -0.012    -4.9  0.97   26.9    55%
+
+15 of 160 configs positive in BOTH train and test
+floor 0: median train E -0.152  median test E -0.187  (32 cfgs)
+floor 0.25: median train E -0.101  median test E -0.070  (32 cfgs)
+floor 0.3: median train E -0.057  median test E -0.038  (32 cfgs)
+floor 0.4: median train E -0.021  median test E -0.017  (32 cfgs)
+floor 0.5: median train E -0.007  median test E +0.003  (32 cfgs)

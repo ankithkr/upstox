@@ -1,0 +1,57 @@
+                                                n  win% E[R]net    netR    PF  maxDD    +mo
+
+===== F breakout or6
+no gate | train                               292  48.6   0.101    29.6  1.25   12.3    62%
+no gate | test                                288  47.2   0.028     7.9  1.06   18.8    55%
+VIX<14 | train                                195  50.8   0.156    30.5  1.38    8.3    60%
+VIX<14 | test                                 138  48.6   0.111    15.4  1.26   11.3    56%
+VIX<13 | train                                143  46.2   0.080    11.5  1.18    8.3    61%
+VIX<13 | test                                  92  46.7   0.108    10.0  1.23    8.0    50%
+nifty trend aligned >0 | train                172  46.5   0.141    24.2  1.35    9.2    67%
+nifty trend aligned >0 | test                 163  49.7   0.111    18.0  1.27   11.1    58%
+nifty trend aligned >1 | train                113  44.2   0.102    11.5  1.24    6.9    65%
+nifty trend aligned >1 | test                 116  50.9   0.160    18.5  1.39    9.5    56%
+VIX<14 & trend>0 | train                      120  48.3   0.170    20.4  1.41    8.0    75%
+VIX<14 & trend>0 | test                        76  51.3   0.245    18.6  1.64    6.3    67%
+VIX<14 & trend>1 | train                       84  45.2   0.119    10.0  1.28    5.6    71%
+VIX<14 & trend>1 | test                        46  56.5   0.403    18.5  2.06    4.9    58%
+
+===== R retest or6
+no gate | train                               235  49.4   0.089    20.8  1.21   10.2    65%
+no gate | test                                267  50.9   0.093    24.9  1.23   19.9    60%
+VIX<14 | train                                165  52.1   0.152    25.1  1.37    5.3    72%
+VIX<14 | test                                 128  56.2   0.236    30.3  1.60   10.1    56%
+VIX<13 | train                                120  53.3   0.222    26.6  1.58    4.0    75%
+VIX<13 | test                                  86  55.8   0.260    22.4  1.64   10.1    50%
+nifty trend aligned >0 | train                148  48.6   0.163    24.1  1.39    6.6    68%
+nifty trend aligned >0 | test                 152  55.3   0.179    27.1  1.48   13.7    58%
+nifty trend aligned >1 | train                105  46.7   0.093     9.8  1.21    7.6    56%
+nifty trend aligned >1 | test                 109  56.9   0.258    28.1  1.71    8.8    75%
+VIX<14 & trend>0 | train                      108  50.9   0.241    26.0  1.58    5.1    82%
+VIX<14 & trend>0 | test                        67  62.7   0.404    27.1  2.29    4.1    60%
+VIX<14 & trend>1 | train                       81  48.1   0.179    14.5  1.42    7.1    67%
+VIX<14 & trend>1 | test                        42  66.7   0.577    24.2  2.90    1.8    83%
+
+#### detail ('F breakout or6', 'VIX<14 & trend>0') trades 196 days 88 avg stop% 0.95
+   gross       E=+0.341R t=+3.82 netR/yr=+18.4
+   cost 0.06   E=+0.250R t=+2.80 netR/yr=+13.5
+   cost 0.124  E=+0.199R t=+2.23 netR/yr=+10.7
+   cost 0.20   E=+0.108R t=+1.20 netR/yr=+5.8
+   by year: {'2023': (6.1, 81), '2024': (14.3, 39), '2025': (11.8, 53), '2026': (6.8, 23)}
+   long/short: {'LONG': (0.186, 147), 'SHORT': (0.24, 49)}
+
+#### detail ('R retest or6', 'VIX<14 & trend>0') trades 175 days 79 avg stop% 0.92
+   gross       E=+0.451R t=+4.67 netR/yr=+21.7
+   cost 0.06   E=+0.356R t=+3.70 netR/yr=+17.1
+   cost 0.124  E=+0.303R t=+3.16 netR/yr=+14.6
+   cost 0.20   E=+0.208R t=+2.17 netR/yr=+10.0
+   by year: {'2023': (18.1, 71), '2024': (7.9, 37), '2025': (15.1, 48), '2026': (12.0, 19)}
+   long/short: {'LONG': (0.251, 137), 'SHORT': (0.491, 38)}
+
+#### detail ('F breakout or6', 'VIX<14') trades 333 days 155 avg stop% 0.98
+   gross       E=+0.276R t=+4.17 netR/yr=+25.3
+   cost 0.06   E=+0.187R t=+2.83 netR/yr=+17.1
+   cost 0.124  E=+0.138R t=+2.08 netR/yr=+12.6
+   cost 0.20   E=+0.048R t=+0.73 netR/yr=+4.4
+   by year: {'2023': (6.1, 123), '2024': (24.4, 72), '2025': (16.9, 89), '2026': (-1.5, 49)}
+   long/short: {'LONG': (0.094, 220), 'SHORT': (0.223, 113)}

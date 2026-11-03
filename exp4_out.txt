@@ -1,0 +1,27 @@
+
+ A: floor0.5ATR BE1.5 T3 bvol>=1.5 vol>=1 trades: 628 days traded: 295 of 902
+  avg stop %: 1.31
+  gross (no cost)              E[R]=+0.141  t-stat=+3.36  netR/yr=+24.3
+  cost 0.06% (big notional)    E[R]=+0.074  t-stat=+1.77  netR/yr=+12.9
+  cost 0.124% (assumed)        E[R]=+0.038  t-stat=+0.90  netR/yr=+6.5
+  cost 0.20% (poor fills)      E[R]=-0.029  t-stat=-0.70  netR/yr=-5.0
+  by year: {'2023': (-0.1, 164), '2024': (12.5, 151), '2025': (16.2, 163), '2026': (-5.0, 150)}
+  long/short E: {'LONG': 0.066, 'SHORT': -0.016}
+
+ B: floor0.4ATR BE1.5 T3 bvol>=1.5 vol>=1 trades: 628 days traded: 295 of 902
+  avg stop %: 1.06
+  gross (no cost)              E[R]=+0.168  t-stat=+3.48  netR/yr=+29.0
+  cost 0.06% (big notional)    E[R]=+0.086  t-stat=+1.78  netR/yr=+14.9
+  cost 0.124% (assumed)        E[R]=+0.041  t-stat=+0.84  netR/yr=+7.0
+  cost 0.20% (poor fills)      E[R]=-0.042  t-stat=-0.86  netR/yr=-7.2
+  by year: {'2023': (-3.9, 164), '2024': (19.2, 151), '2025': (9.8, 163), '2026': (0.6, 150)}
+  long/short E: {'LONG': 0.078, 'SHORT': -0.03}
+
+ C: skip risk/ATR<0.3 BE1.5 T3 vol>=1 trades: 176 days traded: 136 of 902
+  avg stop %: 0.88
+  gross (no cost)              E[R]=+0.303  t-stat=+2.68  netR/yr=+14.6
+  cost 0.06% (big notional)    E[R]=+0.202  t-stat=+1.79  netR/yr=+9.7
+  cost 0.124% (assumed)        E[R]=+0.146  t-stat=+1.29  netR/yr=+7.0
+  cost 0.20% (poor fills)      E[R]=+0.044  t-stat=+0.39  netR/yr=+2.1
+  by year: {'2023': (-1.1, 65), '2024': (21.8, 47), '2025': (2.3, 39), '2026': (2.7, 25)}
+  long/short E: {'LONG': 0.282, 'SHORT': -0.154}

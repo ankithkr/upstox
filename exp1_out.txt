@@ -1,0 +1,110 @@
+stocks 120
+4336 candidates over 387 days; market days 902
+cost % round trip 0.124
+                                                n  win% E[R]net    netR    PF  maxDD    +mo
+all candidates | train                       1213  28.2  -0.268  -325.2  0.59  339.7    17%
+all candidates | test                        1607  26.1  -0.337  -541.3  0.52  546.3     0%
+first 3 entries/day | train                   518  26.6  -0.282  -146.3  0.58  163.8    25%
+first 3 entries/day | test                    521  25.7  -0.311  -161.8  0.55  168.0    10%
+
+yearly (first 3/day)
+2023                                          268  23.5  -0.382  -102.5  0.46  114.9     8%
+2024                                          250  30.0  -0.175   -43.8  0.73   59.3    42%
+2025                                          251  25.9  -0.326   -81.9  0.53   81.9     0%
+2026                                          270  25.6  -0.296   -79.9  0.57   86.1    25%
+
+-- risk_pct (stop %)
+   [    -inf,    0.40)  train n= 303 win=20.8 E=-0.531   test n= 444 win=19.8 E=-0.553
+   [    0.40,    0.53)  train n= 303 win=25.7 E=-0.289   test n= 443 win=21.7 E=-0.436
+   [    0.53,    0.74)  train n= 303 win=31.4 E=-0.201   test n= 404 win=32.4 E=-0.162
+   [    0.74,     inf)  train n= 304 win=34.9 E=-0.053   test n= 316 win=33.2 E=-0.118
+
+-- atr_pct (daily ATR%)
+   [    -inf,    2.07)  train n= 303 win=32.3 E=-0.213   test n= 285 win=30.5 E=-0.273
+   [    2.07,    2.58)  train n= 303 win=26.7 E=-0.301   test n= 367 win=25.1 E=-0.404
+   [    2.58,    3.25)  train n= 303 win=28.7 E=-0.266   test n= 483 win=24.2 E=-0.378
+   [    3.25,     inf)  train n= 304 win=25.0 E=-0.293   test n= 472 win=26.3 E=-0.281
+
+-- risk/ATR
+   [    -inf,    0.15)  train n= 303 win=21.8 E=-0.515   test n= 531 win=18.8 E=-0.540
+   [    0.15,    0.21)  train n= 303 win=23.1 E=-0.333   test n= 416 win=25.2 E=-0.356
+   [    0.21,    0.28)  train n= 303 win=30.7 E=-0.192   test n= 385 win=30.1 E=-0.211
+   [    0.28,     inf)  train n= 304 win=37.2 E=-0.033   test n= 275 win=36.0 E=-0.092
+
+-- rel_bvol (breakout candle vol vs normal)
+   [    -inf,    0.92)  train n= 296 win=20.9 E=-0.478   test n= 496 win=19.6 E=-0.550
+   [    0.92,    1.53)  train n= 297 win=23.2 E=-0.358   test n= 420 win=25.0 E=-0.363
+   [    1.53,    2.88)  train n= 296 win=30.4 E=-0.206   test n= 424 win=29.2 E=-0.233
+   [    2.88,     inf)  train n= 297 win=36.4 E=-0.085   test n= 267 win=35.2 E=-0.064
+
+-- rel_vol (opening vol vs normal)
+   [    -inf,    0.63)  train n= 296 win=24.7 E=-0.378   test n= 435 win=22.3 E=-0.499
+   [    0.63,    0.97)  train n= 297 win=24.9 E=-0.337   test n= 491 win=25.7 E=-0.331
+   [    0.97,    1.47)  train n= 296 win=29.1 E=-0.230   test n= 393 win=25.2 E=-0.356
+   [    1.47,     inf)  train n= 297 win=32.3 E=-0.181   test n= 288 win=34.0 E=-0.076
+
+-- rs (stock-sector, signed)
+   [    -inf,   -0.16)  train n= 303 win=26.7 E=-0.346   test n= 483 win=27.1 E=-0.346
+   [   -0.16,    0.18)  train n= 303 win=31.0 E=-0.206   test n= 460 win=25.9 E=-0.350
+   [    0.18,    0.50)  train n= 303 win=22.8 E=-0.368   test n= 359 win=26.2 E=-0.306
+   [    0.50,     inf)  train n= 304 win=32.2 E=-0.153   test n= 305 win=24.9 E=-0.339
+
+-- |stock_chg|
+   [    -inf,    1.05)  train n= 303 win=26.7 E=-0.351   test n= 319 win=26.6 E=-0.382
+   [    1.05,    1.35)  train n= 303 win=26.4 E=-0.316   test n= 402 win=25.4 E=-0.417
+   [    1.35,    1.74)  train n= 303 win=28.4 E=-0.228   test n= 389 win=25.4 E=-0.334
+   [    1.74,     inf)  train n= 304 win=31.2 E=-0.177   test n= 497 win=27.0 E=-0.245
+
+-- gap (signed w/ dir)
+   [    -inf,    0.23)  train n= 303 win=25.7 E=-0.333   test n= 445 win=25.2 E=-0.392
+   [    0.23,    0.57)  train n= 303 win=27.1 E=-0.294   test n= 416 win=26.2 E=-0.331
+   [    0.57,    0.95)  train n= 303 win=28.1 E=-0.287   test n= 328 win=27.1 E=-0.312
+   [    0.95,     inf)  train n= 304 win=31.9 E=-0.159   test n= 418 win=26.3 E=-0.303
+
+-- daily trend20 (signed w/ dir)
+   [    -inf,   -2.66)  train n= 303 win=30.4 E=-0.192   test n= 412 win=28.9 E=-0.272
+   [   -2.66,    0.17)  train n= 303 win=29.4 E=-0.250   test n= 371 win=24.5 E=-0.414
+   [    0.17,    2.92)  train n= 303 win=28.1 E=-0.302   test n= 396 win=22.5 E=-0.407
+   [    2.92,     inf)  train n= 304 win=25.0 E=-0.327   test n= 428 win=28.3 E=-0.267
+
+-- breadth (% up)
+   [    -inf,   67.50)  train n= 297 win=33.7 E=-0.076   test n= 218 win=25.7 E=-0.368
+   [   67.50,   75.00)  train n= 309 win=28.5 E=-0.318   test n= 273 win=25.6 E=-0.347
+   [   75.00,   81.67)  train n= 296 win=27.0 E=-0.352   test n= 398 win=28.4 E=-0.274
+   [   81.67,     inf)  train n= 311 win=23.8 E=-0.323   test n= 718 win=25.2 E=-0.358
+
+-- vix prev close
+   [    -inf,   11.90)  train n= 303 win=25.7 E=-0.313   test n= 319 win=30.7 E=-0.270
+   [   11.90,   13.55)  train n= 296 win=30.1 E=-0.252   test n= 311 win=26.0 E=-0.332
+   [   13.55,   15.03)  train n= 304 win=30.9 E=-0.183   test n= 300 win=23.3 E=-0.398
+   [   15.03,     inf)  train n= 310 win=26.1 E=-0.323   test n= 677 win=25.3 E=-0.343
+
+-- |nifty chg|
+   [    -inf,    0.39)  train n= 297 win=27.3 E=-0.288   test n= 360 win=30.8 E=-0.246
+   [    0.39,    0.49)  train n= 309 win=25.2 E=-0.351   test n= 250 win=24.8 E=-0.302
+   [    0.49,    0.68)  train n= 293 win=33.1 E=-0.107   test n= 467 win=26.3 E=-0.343
+   [    0.68,     inf)  train n= 314 win=27.4 E=-0.318   test n= 530 win=23.4 E=-0.410
+
+-- nifty trend20 signed
+   [    -inf,   -1.29)  train n= 294 win=27.2 E=-0.306   test n= 336 win=27.4 E=-0.317
+   [   -1.29,    0.25)  train n= 306 win=27.1 E=-0.303   test n= 485 win=23.3 E=-0.448
+   [    0.25,    1.44)  train n= 309 win=29.4 E=-0.224   test n= 417 win=24.7 E=-0.346
+   [    1.44,     inf)  train n= 304 win=28.9 E=-0.241   test n= 369 win=30.4 E=-0.198
+
+-- sector_rank
+   [    -inf,    2.00)  train n= 470 win=28.3 E=-0.278   test n= 569 win=28.5 E=-0.281
+   [    2.00,    3.00)  train n= 408 win=31.6 E=-0.216   test n= 538 win=25.8 E=-0.348
+   [    3.00,     inf)  train n= 335 win=23.9 E=-0.318   test n= 500 win=23.8 E=-0.388
+
+-- entry minute of day
+   [    -inf,  585.00)  train n= 406 win=24.4 E=-0.284   test n= 531 win=24.3 E=-0.352
+   [  585.00,  600.00)  train n= 237 win=29.1 E=-0.227   test n= 311 win=21.2 E=-0.445
+   [  600.00,  630.00)  train n= 197 win=28.4 E=-0.277   test n= 260 win=19.6 E=-0.485
+   [  630.00,  720.00)  train n= 186 win=29.6 E=-0.233   test n= 255 win=34.1 E=-0.126
+   [  720.00,     inf)  train n= 187 win=33.7 E=-0.310   test n= 250 win=34.8 E=-0.231
+
+direction
+LONG | train                                  751  30.0  -0.236  -177.2  0.64  185.2    29%
+LONG | test                                   881  26.7  -0.314  -276.7  0.54  281.5    11%
+SHORT | train                                 462  25.3  -0.320  -147.9  0.53  160.2    17%
+SHORT | test                                  726  25.5  -0.364  -264.5  0.50  271.9    10%
