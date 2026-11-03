@@ -17,6 +17,9 @@ services:
       context: .
       dockerfile: services/strategy-engine/Dockerfile
     env_file: .env
+    volumes:
+      - ./data_cache:/app/data_cache:ro
+      - ./instruments_nse.json:/app/instruments_nse.json:ro
     depends_on:
       - redis
       - data-engine
