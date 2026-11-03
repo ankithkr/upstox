@@ -165,6 +165,10 @@ node_modules/
 frontend/dist/
 frontend/.vite/
 
+# Generated protobuf bindings (compiled at Docker build time from the
+# vendored .proto source, e.g. services/data-engine/proto/*.proto)
+*_pb2.py
+
 # Google OAuth client secret & cached token
 creds.json
 token_google.json
