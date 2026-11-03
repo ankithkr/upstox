@@ -164,6 +164,7 @@ data_cache/
 node_modules/
 frontend/dist/
 frontend/.vite/
+frontend/tsconfig.tsbuildinfo
 
 # Generated protobuf bindings (compiled at Docker build time from the
 # vendored .proto source, e.g. services/data-engine/proto/*.proto)
