@@ -33,6 +33,7 @@ class Signal(BaseModel):
     breakout_price: float
     stop_price: float
     target_price: float
+    breakeven_trigger: float | None = None
     filters_passed: list[str]
 
 
@@ -45,6 +46,7 @@ class OrderIntent(BaseModel):
     entry_price: float
     stop_price: float
     target_price: float
+    breakeven_trigger: float | None = None
     risk_amount: float
 
 

@@ -69,6 +69,7 @@ async def main() -> None:
             entry_price=signal.breakout_price,
             stop_price=signal.stop_price,
             target_price=signal.target_price,
+            breakeven_trigger=signal.breakeven_trigger,
             risk_amount=result.risk_amount,
         )
         cash -= result.qty * signal.breakout_price

@@ -47,10 +47,10 @@ async def _handle_breakout(day_plan: DayPlan, history, params, symbol: str, inst
         day_plan.direction, breakout.entry_price, breakout.stop_price, atr_pct, params.stop_floor_atr
     )
     risk = abs(breakout.entry_price - stop_price)
-    target_price = (
-        breakout.entry_price + params.target_rrr * risk
-        if day_plan.direction == LONG
-        else breakout.entry_price - params.target_rrr * risk
+    sign = 1 if day_plan.direction == LONG else -1
+    target_price = breakout.entry_price + sign * params.target_rrr * risk
+    breakeven_trigger = (
+        breakout.entry_price + sign * params.breakeven_rrr * risk if params.breakeven_rrr is not None else None
     )
     return Signal(
         id=f"{symbol}-{breakout.breakout_time}",
@@ -60,6 +60,7 @@ async def _handle_breakout(day_plan: DayPlan, history, params, symbol: str, inst
         detected_at=breakout.breakout_time,
         breakout_price=breakout.entry_price,
         stop_price=stop_price,
+        breakeven_trigger=breakeven_trigger,
         target_price=target_price,
         filters_passed=["regime_gate", "sector", "stock", "breakout_volume"],
     )

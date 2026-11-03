@@ -38,6 +38,8 @@ services:
       context: .
       dockerfile: services/execution-engine/Dockerfile
     env_file: .env
+    volumes:
+      - ./instruments_nse.json:/app/instruments_nse.json:ro
     depends_on:
       - redis
       - risk-engine
