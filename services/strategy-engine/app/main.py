@@ -18,6 +18,7 @@ from shared.models import Candle, Direction, Signal
 from shared.universe import INDEX_CONSTITUENTS
 
 from .breakout_tracker import apply_atr_floor
+from .config_publisher import publish_active_config
 from .day_plan import DayPlan
 from .history import load_history
 from .instruments import build_equity_symbol_index, load_instrument_master
@@ -73,6 +74,7 @@ async def main() -> None:
     log.info("history loaded: %d days, %d missing symbols", len(history.days), len(history.missing_symbols))
 
     params = DEFAULT_PARAMS
+    publish_active_config(params)
     redis = get_redis()
 
     day_plan: DayPlan | None = None
