@@ -2,10 +2,16 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "backtest-ui",
-      "runtimeExecutable": "venv/Scripts/python.exe",
-      "runtimeArgs": ["ui.py"],
-      "port": 5001
+      "name": "api-gateway",
+      "runtimeExecutable": "docker",
+      "runtimeArgs": ["compose", "up", "api-gateway"],
+      "port": 8000
+    },
+    {
+      "name": "frontend",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "frontend"],
+      "port": 5173
     }
   ]
 }

@@ -1,194 +1,90 @@
-# upstox
+# upstox — paper trading engines
 
-Intraday **top-down ORB** (Opening Range Breakout) strategy tooling for NSE:
+A microservice rebuild of the top-down ORB (Opening Range Breakout) strategy,
+built to forward-test it live against real market data and to need minimal
+change when it moves from paper trading to real orders.
 
-- pulls live index / stock quotes and historical candles from Upstox
-- pushes heatmapped % change tables to Google Sheets
-- backtests the strategy over the cached candle history
-- a local web UI ([`ui.py`](ui.py)) for reviewing the universe, the
-  backtest results, and a per-day sector → stock heatmap for manual replay
+The previous single-repo backtest/review-UI/paper-trading codebase (the
+validated v2 ORB rules, the backtest engine, `paper_trade.py`, the research
+scripts) is preserved on the [`legacy/pre-rebuild`](../../tree/legacy/pre-rebuild)
+branch. This `main` branch starts the new architecture from scratch; the v2
+strategy *rules* are being ported forward into `strategy-engine`, not
+re-researched.
 
-Strategy spec: [`Intraday Top-Down ORB Strategy Documentation.pdf`](Intraday%20Top-Down%20ORB%20Strategy%20Documentation.pdf)
+## Architecture
 
----
-
-## 1. Prerequisites
-
-- **Python 3.13** (3.11+ should work)
-- An **Upstox developer app** (API key + secret) — only needed to fetch
-  fresh data; the review UI runs fine on the cached data alone
-- A **Google Cloud OAuth client** (`creds.json`) — only needed for the
-  Google Sheets sync scripts
-
-## 2. Set up the environment
-
-Clone, then create and activate a virtualenv and install the deps.
-
-### Windows (PowerShell)
-
-```powershell
-git clone https://github.com/ankithkr/upstox.git
-cd upstox
-python -m venv venv
-venv\Scripts\Activate.ps1
-pip install -r requirements.txt
+```
+data-engine --candles--> strategy-engine --signals--> risk-engine --orders--> execution-engine
+   (Upstox WS)              (v2 ORB rules)              (sizing/cap)          (Broker: PaperBroker)
+                                                                                      |
+                                                                                 Supabase (state)
+                                                                                      |
+                                                              api-gateway  <----------+
+                                                            (FastAPI, the only        |
+                                                             service the frontend     v
+                                                             talks to)            frontend (React)
 ```
 
-If PowerShell blocks the activation script, allow it for the current user once:
+| Service | Job |
+|---|---|
+| `services/data-engine` | Upstox WebSocket feed, 5-min candle aggregation, market-hours scheduling. Publishes candles to Redis. |
+| `services/strategy-engine` | The ported v2 ORB rules: regime gate, sector/stock filters, breakout entry. Publishes signals to Redis. |
+| `services/risk-engine` | Position sizing (1% risk, no leverage), daily trade cap, capital checks. Publishes sized order intents to Redis. |
+| `services/execution-engine` | Owns the `Broker` interface. Runs `PaperBroker` today; a future `UpstoxLiveBroker` implements the same interface for real orders. Writes trade lifecycle to Supabase. |
+| `services/api-gateway` | The only service the frontend talks to. REST/WebSocket over Supabase state. |
+| `frontend` | React dashboard (live positions, trade log, equity curve, strategy config). |
+| `packages/shared` | Pydantic models (`Candle`, `Signal`, `OrderIntent`, `Trade`, `Position`) and the `Broker` abstract interface, shared by every Python service. |
 
-```powershell
-Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
-```
+Each backend service is its own Docker container, talking to the others only
+through Redis (live candle/signal stream) and Supabase (persisted business
+state — trades, orders, equity, strategy config; raw candle history is kept
+in a local/object cache, not Postgres).
 
-### Windows (cmd)
+## Status
 
-```bat
-python -m venv venv
-venv\Scripts\activate.bat
-pip install -r requirements.txt
-```
+Scaffolding only — every service currently just logs a heartbeat. See the
+build phases below for what's next.
 
-### macOS / Linux
+| Phase | What it adds |
+|---|---|
+| 0 | Done: repo restructuring (`legacy/pre-rebuild` branch), this skeleton |
+| 1 | Supabase schema (`infra/supabase/migrations`), shared models, `Broker` interface stub |
+| 2 | `data-engine`: Upstox WebSocket client, candle aggregation, market-hours scheduler |
+| 3 | `strategy-engine`: port the v2 ORB rules from `legacy/pre-rebuild`'s `src/strategy` + `src/backtest` |
+| 4 | `risk-engine`: sizing, daily cap, capital checks |
+| 5 | `execution-engine`: `PaperBroker`, cost model ported from `legacy/pre-rebuild`'s `src/backtest/costs.py` |
+| 6 | `api-gateway`: REST/WS surface for the frontend |
+| 7 | `frontend`: the real dashboard |
+| 8 | Deploy: Render (background workers for the 4 engines, web service for `api-gateway`), Vercel (frontend), Supabase (DB) |
+| 9 | Operational runbook: daily Upstox re-auth, alerting, one full live paper session |
+| 10 (later) | Swap in `UpstoxLiveBroker`, add live-money guardrails |
+
+## Local development
 
 ```bash
-git clone https://github.com/ankithkr/upstox.git
-cd upstox
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+cp .env.example .env            # fill in UPSTOX_API_KEY/SECRET, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
+docker compose up --build       # redis + all 5 backend services
 ```
 
-## 3. Configure
-
-Copy the example env file and fill it in:
-
 ```bash
+cd frontend
 cp .env.example .env
-```
-
-| Variable | Needed for | Notes |
-| --- | --- | --- |
-| `UPSTOX_API_KEY` / `UPSTOX_API_SECRET` | fetching data | from your Upstox app |
-| `UPSTOX_REDIRECT_URI` | Upstox login | must match the app config, e.g. `http://localhost:5000/callback` |
-| `FLASK_SECRET_KEY` | Upstox login flow | any random string |
-| `PORT` | Upstox login flow | default `5000` |
-| `UPSTOX_TOKEN_FILE` | all Upstox calls | default `token.json` |
-| `GOOGLE_CREDENTIALS_FILE` | Sheets sync | path to the OAuth client `creds.json` |
-| `GOOGLE_TOKEN_FILE` | Sheets sync | cached Google token, default `token_google.json` |
-| `GOOGLE_SHEET_ID` | Sheets sync | the target spreadsheet's ID |
-
-## 4. Authenticate (only to fetch fresh data)
-
-**Upstox** — the access token expires daily; rerun when it does:
-
-```bash
-python upstox_auth.py
-```
-
-Then open `http://localhost:5000/`, log in with Upstox, and the token is
-saved to `token.json`.
-
-**Google Sheets** (only for the sync scripts) — put your OAuth client
-file at `creds.json`, then:
-
-```bash
-python authenticate_google.py
-```
-
-## 5. Populate the candle cache
-
-Historical candles are cached under `data_cache/candles/` (git-ignored).
-Running the backtest fills it:
-
-```bash
-python update_backtest_dashboard.py
-```
-
-This fetches ~6 months of index and stock candles, runs the backtest, and
-writes the summary + trades to Google Sheets. The candle CSVs it leaves
-behind are what the review UI reads.
-
-Other data scripts (all require a valid Upstox token, and Sheets access):
-
-| Script | What it does |
-| --- | --- |
-| `python seed_indices_sheet.py` | seed the `Indices` worksheet with the sector list |
-| `python update_indices_sheet.py` | refresh `Indices` with live % change + heatmap |
-| `python update_index_stocks_sheet.py` | one worksheet per index with its stocks' live % change |
-| `python update_backtest_dashboard.py` | run the backtest, write dashboard + trades |
-
-## 6. Run the review UI
-
-Build the UI's data files from the cached candles (offline — no Upstox
-token needed):
-
-```bash
-python precompute_ui.py
-```
-
-This writes `data_cache/ui_backtest.json` and `data_cache/ui_daily.json`
-(takes a few minutes; range auto-resolves to whatever the candle cache
-covers). Then start the app:
-
-```bash
-python ui.py
-```
-
-Open **http://localhost:5001**. Three tabs:
-
-- **Matrix** — each sector index and its constituent stocks
-- **Backtest data** — dashboard summary + a filterable table of every trade
-- **Date heatmap** — pick a trading day to see the market bias, a
-  red→green heatmap of every sector's 09:30 % change, and (on click) a
-  drill-down heatmap of that sector's stocks with the simulated ORB trade
-
-The **Rebuild data** button in the UI reruns `precompute_ui.py`.
-
-> The UI never calls Upstox or Google at request time — it only reads the
-> JSON built in this step. To widen the date range or refresh it, get a
-> new Upstox token, rerun `update_backtest_dashboard.py`, then
-> `precompute_ui.py` (or the Rebuild button).
-
-### Run it with Docker instead
-
-If the native setup above gives you trouble (e.g. Python version/pip
-issues on macOS), run the review UI in Docker instead — you still need
-`data_cache/` populated first (step 5, done on any machine), but skip
-the venv/Python setup entirely.
-
-```bash
-docker compose up --build
-```
-
-Open **http://localhost:5001**. This mounts your local `data_cache/`
-into the container (so it reads/writes the same candles and UI JSON as
-a native run) and `instruments_nse.json` read-only (only needed for the
-in-app **Rebuild data** button — comment that line out of
-`docker-compose.yml` if you don't have the file).
-
-Without Compose:
-
-```bash
-docker build -t upstox-review-ui .
-docker run --rm -p 5001:5001 \
-  -v "$(pwd)/data_cache:/app/data_cache" \
-  -v "$(pwd)/instruments_nse.json:/app/instruments_nse.json:ro" \
-  upstox-review-ui
+npm install
+npm run dev                     # http://localhost:5173
 ```
 
 ## Project layout
 
 ```
-src/
-  backtest/       ORB simulation, backtest runner, dashboard aggregates
-  analysis/       per-day sector/stock snapshots for the UI
-  strategy/       market bias, sector selection, momentum filters
-  data/           the index and constituent-stock universe
-  integrations/   Upstox (auth, quotes, history, instruments) + Google Sheets
-  calculations/   % change helper
-ui.py             the review web app  (port 5001)
-precompute_ui.py  builds the UI's JSON from the candle cache
-upstox_auth.py    one-off Upstox OAuth login  (port 5000)
-data_cache/       cached candles + generated UI JSON  (git-ignored)
-Dockerfile, docker-compose.yml   containerized review UI (see above)
+packages/shared/     shared Pydantic models + Broker interface
+services/
+  data-engine/        Upstox WS -> candles -> Redis
+  strategy-engine/    v2 ORB rules -> signals -> Redis
+  risk-engine/         sizing/caps -> orders -> Redis
+  execution-engine/   Broker (PaperBroker) -> Supabase
+  api-gateway/         FastAPI, the frontend's only backend contact
+frontend/             React dashboard (Vercel)
+infra/supabase/migrations/   DB schema
+docker-compose.yml    local dev: redis + all backend services
+Intraday Top-Down ORB Strategy Documentation.pdf   original strategy spec
 ```

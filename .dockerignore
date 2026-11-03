@@ -1,17 +1,10 @@
-.git/
 venv/
 .venv/
-__pycache__/
-**/__pycache__/
-*.pyc
-
-# local caches / secrets (mounted as volumes instead, not baked into the image)
+node_modules/
 data_cache/
-instruments_nse.json
-token.json
-token_google.json
-creds.json
+.git/
 .env
-
-*.pdf
-README.md
+__pycache__/
+*.pyc
+frontend/dist/
+frontend/node_modules/
